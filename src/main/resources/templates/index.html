@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スロット設定判別ツール</title>
+    <style>
+        /* 全体のレイアウト（ダークモード） */
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            background-color: #1a1a1a; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            color: #fff;
+        }
+        /* 入力カード */
+        .card { 
+            background: #2a2a2a; 
+            padding: 2rem; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 25px rgba(0,0,0,0.5); 
+            width: 90%; 
+            max-width: 380px; 
+            border: 1px solid #444;
+        }
+        h1 { 
+            font-size: 1.4rem; 
+            color: #f8c146; /* ジャグラーのランプっぽい金黄色 */
+            text-align: center; 
+            margin-bottom: 1.5rem; 
+            border-bottom: 2px solid #f8c146; 
+            padding-bottom: 10px;
+        }
+        .form-group { margin-bottom: 1.2rem; }
+        label { 
+            display: block; 
+            font-size: 0.85rem; 
+            color: #aaa; 
+            margin-bottom: 6px; 
+            font-weight: bold; 
+        }
+        /* 入力フォームのスタイル */
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #444; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 1rem; 
+            background-color: #333;
+            color: #fff;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { 
+            outline: none; 
+            border-color: #f8c146; 
+            background-color: #3a3a3a;
+        }
+        .optional { 
+            font-weight: normal; 
+            color: #777; 
+            font-size: 0.75rem; 
+            margin-left: 5px;
+        }
+        /* 実行ボタン（赤く光るイメージ） */
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: linear-gradient(135deg, #ff3b3b, #a00000);
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: transform 0.1s, box-shadow 0.2s; 
+            margin-top: 1rem; 
+            box-shadow: 0 4px 10px rgba(255, 59, 59, 0.3);
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 59, 59, 0.5);
+        }
+        button:active { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>設定判別ツール</h1>
+    
+    <form th:action="@{/calculate}" method="post" id="calcForm">
+        
+        <div class="form-group">
+            <label for="type">対象機種</label>
+            <select name="type" id="type">
+                <option value="" selected disabled>-- 機種を選択してください --</option>
+                <option value="im">アイムジャグラーEX</option>
+                <option value="gogo3">ゴーゴージャグラー3</option>
+                <option value="happy">ハッピージャグラーVⅢ</option>
+                <option value="my">マイジャグラーV</option>
+                <option value="funky">ファンキージャグラー2</option>
+                <option value="girls">ジャグラーガールズSS</option>
+                <option value="mr">ミスタージャグラー</option>
+                <option value="ultra">ウルトラミラクルジャグラー</option>
+                <option value="neo">ネオアイムジャグラーEX</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="total">総回転数</label>
+            <input type="number" id="total" name="total" placeholder="例: 3000" required min="1">
+        </div>
+
+        <div class="form-group">
+            <label for="bb">BIG回数</label>
+            <input type="number" id="bb" name="bb" placeholder="例: 12" required min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="rb">REG回数</label>
+            <input type="number" id="rb" name="rb" placeholder="例: 11" required min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="grape">ブドウ回数<span class="optional">(任意)</span></label>
+            <input type="number" id="grape" name="grape" placeholder="空欄でもOK" min="0">
+        </div>
+
+        <button type="submit">判別を実行する</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('calcForm').addEventListener('submit', function(e) {
+        const typeSelect = document.getElementById('type');
+        
+        // 機種が選択されていない（valueが空）場合
+        if (typeSelect.value === "") {
+            e.preventDefault(); // 送信を中止
+            alert("機種を選択してください！"); // ポップアップを表示
+            typeSelect.focus();
+        }
+    });
+</script>
+
+</body>
+</html>

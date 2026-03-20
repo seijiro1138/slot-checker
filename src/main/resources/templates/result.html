@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>判別結果</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #fff; }
+        .card { background: #2a2a2a; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); width: 90%; max-width: 400px; }
+        h1 { font-size: 1.2rem; color: #f8c146; text-align: center; margin-bottom: 1.5rem; border-bottom: 2px solid #555; padding-bottom: 10px; }
+        
+        /* 確率の表示エリア */
+        .prob-box { background: #333; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .res-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #444; }
+        .res-item:last-child { border-bottom: none; }
+        .res-label { font-size: 0.9rem; color: #aaa; }
+        .res-value { font-size: 1.1rem; font-weight: bold; color: #fff; }
+
+        /* パーセンテージ表示エリア */
+        .pct-container { margin-top: 10px; }
+        .pct-row { display: flex; align-items: center; margin-bottom: 12px; transition: all 0.3s; }
+        .setting-label { width: 50px; font-weight: bold; font-size: 0.9rem; color: #ccc; }
+        .bar-bg { flex-grow: 1; background: #444; height: 12px; margin: 0 10px; border-radius: 6px; overflow: hidden; }
+        .bar-fill { height: 100%; background-color: #007bff; border-radius: 6px; }
+        .pct-value { width: 45px; text-align: right; font-weight: bold; font-size: 0.9rem; }
+
+        /* 最有力設定の特別装飾（大きく、赤く！） */
+        .top-setting .setting-label { font-size: 1.4rem; color: #ff3b3b; text-shadow: 0 0 5px rgba(255, 59, 59, 0.5); }
+        .top-setting .bar-fill { background: linear-gradient(90deg, #ff3b3b, #ff8e8e); box-shadow: 0 0 8px rgba(255, 59, 59, 0.8); }
+        .top-setting .pct-value { font-size: 1.4rem; color: #ff3b3b; }
+
+        .back-link { display: block; text-align: center; margin-top: 2rem; color: #aaa; text-decoration: none; font-size: 0.9rem; padding: 10px; background: #333; border-radius: 8px; }
+        .back-link:hover { background: #444; color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1 th:text="${machineName} + ' の判別結果'">機種名</h1>
+    
+    <div class="pct-container">
+        <div th:each="pct, stat : ${percentages}" 
+             th:class="${stat.count == estimate} ? 'pct-row top-setting' : 'pct-row'">
+            <span class="setting-label">設定<span th:text="${stat.count}">1</span></span>
+            
+            <div class="bar-bg">
+                <div class="bar-fill" th:style="'width: ' + ${pct} + '%;'"></div>
+            </div>
+            
+            <span class="pct-value" th:text="${pct} + '%'">0%</span>
+        </div>
+    </div>
+
+    <div class="prob-box" style="margin-top: 20px;">
+        <div class="res-item">
+            <span class="res-label">BB確率</span>
+            <span class="res-value" th:text="'1/' + ${bbProb}">1/--</span>
+        </div>
+        <div class="res-item">
+            <span class="res-label">RB確率</span>
+            <span class="res-value" th:text="'1/' + ${rbProb}">1/--</span>
+        </div>
+        <div class="res-item">
+            <span class="res-label">合算確率</span>
+            <span class="res-value" th:text="'1/' + ${totalProb}">1/--</span>
+        </div>
+        <div class="res-item" th:if="${grapeProb != null}">
+            <span class="res-label">ブドウ確率</span>
+            <span class="res-value" th:text="'1/' + ${grapeProb}">1/--</span>
+        </div>
+    </div>
+
+    <a href="/" class="back-link">← 新しいデータで判別する</a>
+</div>
+
+</body>
+</html>
