@@ -23,8 +23,6 @@ public class SlotController {
         // ボタンが押されたこともログに残す（これで20件掃除も走ります）
         accessLogService.saveLog("判別実行ボタン押下");
         
-        // とりあえず今は index.html に戻す設定です。
-        // もし結果表示用のHTML（result.htmlなど）を別に作っているなら、ここを "result" に変えます。
-        return "index"; 
+        return "result"; 
     }
 }
