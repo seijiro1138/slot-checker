@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>判別結果</title>
+    <title>判別結果 - スロットチェッカー</title>
     <style>
         body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; color: #fff; }
         .card { background: #2a2a2a; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); width: 90%; max-width: 400px; }
@@ -24,7 +24,7 @@
         .bar-fill { height: 100%; background-color: #007bff; border-radius: 6px; }
         .pct-value { width: 45px; text-align: right; font-weight: bold; font-size: 0.9rem; }
 
-        /* 最有力設定の特別装飾（大きく、赤く！） */
+        /* 最有力設定の特別装飾 */
         .top-setting .setting-label { font-size: 1.4rem; color: #ff3b3b; text-shadow: 0 0 5px rgba(255, 59, 59, 0.5); }
         .top-setting .bar-fill { background: linear-gradient(90deg, #ff3b3b, #ff8e8e); box-shadow: 0 0 8px rgba(255, 59, 59, 0.8); }
         .top-setting .pct-value { font-size: 1.4rem; color: #ff3b3b; }
@@ -41,6 +41,7 @@
     <div class="pct-container">
         <div th:each="pct, stat : ${percentages}" 
              th:class="${stat.count == estimate} ? 'pct-row top-setting' : 'pct-row'">
+            
             <span class="setting-label">設定<span th:text="${stat.count}">1</span></span>
             
             <div class="bar-bg">
@@ -64,6 +65,7 @@
             <span class="res-label">合算確率</span>
             <span class="res-value" th:text="'1/' + ${totalProb}">1/--</span>
         </div>
+        
         <div class="res-item" th:if="${grapeProb != null}">
             <span class="res-label">ブドウ確率</span>
             <span class="res-value" th:text="'1/' + ${grapeProb}">1/--</span>
