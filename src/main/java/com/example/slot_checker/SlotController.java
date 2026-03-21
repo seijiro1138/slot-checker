@@ -1,5 +1,7 @@
-import org.springframework.ui.Model; // これを追加！
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+import java.util.Arrays;
 
 @PostMapping("/calculate")
 public String calculate(
