@@ -1,28 +1,26 @@
-package com.example.slot_checker;
+import org.springframework.ui.Model; // これを追加！
+import org.springframework.web.bind.annotation.RequestParam;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping; 
+@PostMapping("/calculate")
+public String calculate(
+    @RequestParam("type") String type,
+    @RequestParam("total") int total,
+    @RequestParam("bb") int bb,
+    @RequestParam("rb") int rb,
+    @RequestParam(value = "grape", required = false) Integer grape,
+    Model model) { // Modelを追加
 
-@Controller
-public class SlotController {
+    // 1. 確率の計算（(double)を付けて小数点を有効にする）
+    double bbProbability = (bb > 0) ? (double) total / bb : 0;
+    double rbProbability = (rb > 0) ? (double) total / rb : 0;
 
-    @Autowired
-    private AccessLogService accessLogService;
+    // 2. ログ保存
+    accessLogService.saveLog("判別実行: " + type + " (" + total + "G)");
 
-    @GetMapping("/")
-    public String index() {
-        accessLogService.saveLog("Top Page Access");
-        return "index";
-    }
+    // 3. 画面（result.html）に値を渡す
+    model.addAttribute("type", type);
+    model.addAttribute("bbProb", String.format("%.1f", bbProbability)); // 「1/150.5」の「150.5」部分
+    model.addAttribute("rbProb", String.format("%.1f", rbProbability));
 
-    // ★ @GetMapping を @PostMapping に変更！
-    @PostMapping("/calculate")
-    public String calculate() {
-        // ボタンが押されたログを残す
-        accessLogService.saveLog("判別実行ボタン押下");
-    
-        return "result"; 
-    }
+    return "result"; 
 }
