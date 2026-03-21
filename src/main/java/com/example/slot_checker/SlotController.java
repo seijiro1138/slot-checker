@@ -13,12 +13,11 @@ public class SlotController {
 
     @GetMapping("/")
     public String index() {
-        // アクセスがあった瞬間に、現在時刻をDBに保存！
         AccessLog log = new AccessLog();
         log.setAccessTime(LocalDateTime.now());
         log.setMemo("Top Page Access");
         repository.save(log);
         
-        return "index"; // index.htmlを表示
+        return "index";
     }
 }
