@@ -3,20 +3,18 @@ package com.example.slot_checker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import java.time.LocalDateTime;
 
 @Controller
 public class SlotController {
 
+    // 直接 Repository を触るのではなく、Service（司令塔）にお願いする
     @Autowired
-    private AccessLogRepository repository;
+    private AccessLogService accessLogService;
 
     @GetMapping("/")
     public String index() {
-        AccessLog log = new AccessLog();
-        log.setAccessTime(LocalDateTime.now());
-        log.setMemo("Top Page Access");
-        repository.save(log);
+        // 保存と20件掃除をセットで実行！
+        accessLogService.saveLog("Top Page Access");
         
         return "index";
     }
