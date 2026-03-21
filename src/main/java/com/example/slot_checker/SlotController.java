@@ -3,6 +3,7 @@ package com.example.slot_checker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping; 
 
 @Controller
 public class SlotController {
@@ -10,19 +11,18 @@ public class SlotController {
     @Autowired
     private AccessLogService accessLogService;
 
-    // 1. トップページ（/）にアクセスした時
     @GetMapping("/")
     public String index() {
         accessLogService.saveLog("Top Page Access");
         return "index";
     }
 
-    // 2. 「判別を実行する」ボタン（/calculate）を押した時 ★ここを追加！
-    @GetMapping("/calculate")
+    // ★ @GetMapping を @PostMapping に変更！
+    @PostMapping("/calculate")
     public String calculate() {
-        // ボタンが押されたこともログに残す（これで20件掃除も走ります）
+        // ボタンが押されたログを残す
         accessLogService.saveLog("判別実行ボタン押下");
-        
+    
         return "result"; 
     }
 }
