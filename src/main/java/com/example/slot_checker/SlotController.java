@@ -1,4 +1,15 @@
-// ...package/importsはそのまま
+package com.example.slot_checker;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.ui.Model;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class SlotController {
@@ -19,11 +30,9 @@ public class SlotController {
 
         double[] bbTargets;
         double[] rbTargets;
-        double machineCombined[];
 
         String machineName;
 
-        // 機種ごとの設定確率
         switch (type) {
             case "im":
                 machineName = "アイムジャグラーEX";
@@ -77,32 +86,37 @@ public class SlotController {
                 break;
         }
 
+        // 確率計算（null対応）
         Double bbProb = (bb > 0) ? (double) total / bb : null;
         Double rbProb = (rb > 0) ? (double) total / rb : null;
         Double totalProb = (bb + rb > 0) ? (double) total / (bb + rb) : null;
 
+        // 合成確率
+        double[] combinedTargets = new double[6];
+        for (int i = 0; i < 6; i++) {
+            combinedTargets[i] = 1 / (1 / bbTargets[i] + 1 / rbTargets[i]);
+        }
+
+        // diffs 計算
         double[] diffs = new double[6];
         int estimatedSetting = 1;
         double minDiff = Double.MAX_VALUE;
 
-        // 設定ごとに誤差計算（BB/REG/合成の重み付け）
         for (int i = 0; i < 6; i++) {
             double bbDiff = (bbProb != null) ? Math.abs(bbProb - bbTargets[i]) : 0;
             double rbDiff = (rbProb != null) ? Math.abs(rbProb - rbTargets[i]) : 0;
-            double totalTarget = 1 / (1 / bbTargets[i] + 1 / rbTargets[i]);
-            double totalDiff = (totalProb != null) ? Math.abs(totalProb - totalTarget) : 0;
+            double totalDiff = (totalProb != null) ? Math.abs(totalProb - combinedTargets[i]) : 0;
 
-            // 重み付け: REG重め
             double score = bbDiff * 0.4 + rbDiff * 0.6 + totalDiff * 0.5;
-
             diffs[i] = score;
+
             if (score < minDiff) {
                 minDiff = score;
                 estimatedSetting = i + 1;
             }
         }
 
-        // パーセンテージ化（強度表示用）
+        // パーセンテージ化
         double totalScore = 0;
         double[] scores = new double[6];
         for (int i = 0; i < 6; i++) {
@@ -115,11 +129,9 @@ public class SlotController {
             percentages.add((int)Math.round((scores[i] / totalScore) * 100));
         }
 
-        // 合成確率計算
-        double[] combinedTargets = new double[6];
-        for (int i = 0; i < 6; i++) {
-            combinedTargets[i] = 1 / (1 / bbTargets[i] + 1 / rbTargets[i]);
-        }
+        // 配列 → List 変換（Thymeleaf安全対応）
+        List<Double> diffsList = Arrays.stream(diffs).boxed().collect(Collectors.toList());
+        List<Double> combinedList = Arrays.stream(combinedTargets).boxed().collect(Collectors.toList());
 
         model.addAttribute("type", type);
         model.addAttribute("machineName", machineName);
@@ -128,8 +140,8 @@ public class SlotController {
         model.addAttribute("bbProb", bbProb);
         model.addAttribute("rbProb", rbProb);
         model.addAttribute("totalProb", totalProb);
-        model.addAttribute("combinedTargets", combinedTargets);
-        model.addAttribute("diffs", diffs);
+        model.addAttribute("diffs", diffsList);
+        model.addAttribute("combinedTargets", combinedList);
 
         if (grape != null && grape > 0) {
             model.addAttribute("grapeProb", (double) total / grape);
