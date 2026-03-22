@@ -86,18 +86,15 @@ public class SlotController {
                 break;
         }
 
-        // 確率計算（null対応）
         Double bbProb = (bb > 0) ? (double) total / bb : null;
         Double rbProb = (rb > 0) ? (double) total / rb : null;
         Double totalProb = (bb + rb > 0) ? (double) total / (bb + rb) : null;
 
-        // 合成確率
         double[] combinedTargets = new double[6];
         for (int i = 0; i < 6; i++) {
             combinedTargets[i] = 1 / (1 / bbTargets[i] + 1 / rbTargets[i]);
         }
 
-        // diffs 計算
         double[] diffs = new double[6];
         int estimatedSetting = 1;
         double minDiff = Double.MAX_VALUE;
@@ -116,7 +113,6 @@ public class SlotController {
             }
         }
 
-        // パーセンテージ化
         double totalScore = 0;
         double[] scores = new double[6];
         for (int i = 0; i < 6; i++) {
@@ -129,7 +125,6 @@ public class SlotController {
             percentages.add((int)Math.round((scores[i] / totalScore) * 100));
         }
 
-        // 配列 → List 変換（Thymeleaf安全対応）
         List<Double> diffsList = Arrays.stream(diffs).boxed().collect(Collectors.toList());
         List<Double> combinedList = Arrays.stream(combinedTargets).boxed().collect(Collectors.toList());
 
