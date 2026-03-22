@@ -69,9 +69,12 @@
     </span>
 </div>
         <div class="res-item">
-            <span class="res-label">合算確率</span>
-            <span class="res-value" th:text="'1/' + ${totalProb}">1/--</span>
-        </div>
+    <span class="res-label">合算確率</span>
+    <span class="res-value"
+          th:text="${totalProb != null} ? '1/' + ${#numbers.formatDecimal(totalProb, 1, 1)} : '-'">
+        1/--
+    </span>
+</div>
         
         <div class="res-item" th:if="${grapeProb != null}">
             <span class="res-label">ブドウ確率</span>
