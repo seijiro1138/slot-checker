@@ -9,13 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface AccessLogRepository extends JpaRepository<AccessLog, Long> {
 
+    // 最新20件「以外」を削除する特注SQL
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM access_log WHERE id NOT IN (" +
-                   "  SELECT id FROM (" +
-                   "    SELECT id FROM access_log ORDER BY access_time DESC LIMIT 20" +
-                   "  ) AS temp" + // サブクエリに 'temp' という名前をつけて一度切り離す
-                   ")", 
+                   "SELECT id FROM access_log ORDER BY access_time DESC LIMIT 20)", 
            nativeQuery = true)
     void deleteOldLogs();
 }
