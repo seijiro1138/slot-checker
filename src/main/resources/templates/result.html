@@ -54,13 +54,20 @@
 
     <div class="prob-box" style="margin-top: 20px;">
         <div class="res-item">
-            <span class="res-label">BB確率</span>
-            <span class="res-value" th:text="'1/' + ${bbProb}">1/--</span>
-        </div>
-        <div class="res-item">
-            <span class="res-label">RB確率</span>
-            <span class="res-value" th:text="'1/' + ${rbProb}">1/--</span>
-        </div>
+    <span class="res-label">BB確率</span>
+    <span class="res-value"
+          th:text="${bbProb != null} ? '1/' + ${#numbers.formatDecimal(bbProb, 1, 1)} : '-'">
+        1/--
+    </span>
+</div>
+
+<div class="res-item">
+    <span class="res-label">RB確率</span>
+    <span class="res-value"
+          th:text="${rbProb != null} ? '1/' + ${#numbers.formatDecimal(rbProb, 1, 1)} : '-'">
+        1/--
+    </span>
+</div>
         <div class="res-item">
             <span class="res-label">合算確率</span>
             <span class="res-value" th:text="'1/' + ${totalProb}">1/--</span>
